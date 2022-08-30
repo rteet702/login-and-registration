@@ -1,5 +1,11 @@
 from flask_app import app
-from flask import redirect, render_template, session, request
+from flask_app.models.users import User
+from flask import redirect, render_template, session, request, flash
+from flask_bcrypt import Bcrypt
+
+
+bcrypt = Bcrypt(app)
+
 
 @app.route('/')
 def dashboard():
@@ -19,12 +25,24 @@ def r_register():
 @app.route('/submit', methods=['POST'])
 def f_submit():
     inbound = request.form
-    print('test')
-    print(inbound)
-    
+
     if inbound['type'] == 'register':
-        pass
+        if inbound['password'] == inbound['confirm_password']:
+            pw_hash = bcrypt.generate_password_hash(inbound['password'])
+            data = {
+                'first_name': inbound['first_name'],
+                'last_name': inbound['last_name'],
+                'email': inbound['email'],
+                'password': pw_hash
+            }
+            login_id = User.save(data)
+        else:
+            flash('Passwords do not match!')
+            return redirect('/register')
     elif inbound['type'] == 'login':
-        pass
-    session['login_id'] = 'test'
+        data = {
+            'email': inbound['email'],
+            'password': pw_hash
+        }
+    session['login_id'] = login_id
     return redirect('/')
