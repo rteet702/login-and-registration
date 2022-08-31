@@ -10,7 +10,11 @@ bcrypt = Bcrypt(app)
 @app.route('/')
 def dashboard():
     if 'login_id' in session:
-        return render_template('dashboard.html')
+        data = {
+            'id': session['login_id']
+        }
+        user = User.get_by_id(data)
+        return render_template('dashboard.html', user=user)
     else:
         return redirect('/login')
 
@@ -27,20 +31,18 @@ def f_submit():
     inbound = request.form
 
     if inbound['type'] == 'register':
-        if inbound['password'] == inbound['confirm_password']:
-            pw_hash = bcrypt.generate_password_hash(inbound['password'])
-            data = {
-                'first_name': inbound['first_name'],
-                'last_name': inbound['last_name'],
-                'email': inbound['email'],
-                'password': pw_hash
-            }
-
-            login_id = User.save(data)
-            session['login_id'] = login_id
-        else:
-            flash('Passwords do not match!')
+        if not User.validate_user_register(inbound):
             return redirect('/register')
+        pw_hash = bcrypt.generate_password_hash(inbound['password'])
+        data = {
+            'first_name': inbound['first_name'],
+            'last_name': inbound['last_name'],
+            'email': inbound['email'],
+            'password': pw_hash
+        }
+
+        login_id = User.save(data)
+        session['login_id'] = login_id
     elif inbound['type'] == 'login':
         print('Entering Login Phase')
         data = {

@@ -13,6 +13,13 @@
             <div class="card-header fs-2">
                 User Login
             </div>
+            {% with messages = get_flashed_messages() %}    
+                {% if messages %}
+                    {% for message in messages %}
+                    <p class="fs-4 text-danger mx-3">{{message}}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             <div class="card-body">
                 <form class="p-3" action="/submit" method="post">
                     <input type="hidden" name="type" value="login">

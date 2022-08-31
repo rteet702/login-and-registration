@@ -11,15 +11,15 @@
     <div class="container">
         <div class="card w-50 mx-auto mt-5 text-bg-dark shadow-lg">
             <div class="card-header fs-2">
-                User Dashboard
+                {{ user.first_name }} {{ user.last_name }}'s Dashboard
             </div>
             <div class="card-body">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste commodi, laudantium magnam voluptatum aspernatur vero debitis at id ab labore quis aut nemo soluta delectus quam, impedit aliquid veritatis laborum!</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste commodi, laudantium magnam voluptatum aspernatur vero debitis at id ab labore quis aut nemo soluta delectus quam, impedit aliquid veritatis laborum!</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste commodi, laudantium magnam voluptatum aspernatur vero debitis at id ab labore quis aut nemo soluta delectus quam, impedit aliquid veritatis laborum!</p>
+                <p>Hello, {{ user.first_name }}, welcome to the dashboard.</p>
+                <p>You've been a user since {{ user.created_at }}.</p>
+                <p>Thanks for being here!</p>
             </div>
             <div class="card-footer text-muted">
-                Why are you here? <a href="/logout">Click here to logout!</a>
+                <a href="/logout">Click here to logout!</a>
             </div>
         </div>
     </div>
