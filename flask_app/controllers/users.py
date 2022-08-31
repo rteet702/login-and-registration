@@ -35,14 +35,35 @@ def f_submit():
                 'email': inbound['email'],
                 'password': pw_hash
             }
+
             login_id = User.save(data)
+            session['login_id'] = login_id
         else:
             flash('Passwords do not match!')
             return redirect('/register')
     elif inbound['type'] == 'login':
+        print('Entering Login Phase')
         data = {
-            'email': inbound['email'],
-            'password': pw_hash
+            'email': inbound['email']
         }
-    session['login_id'] = login_id
+        user_in_db = User.get_by_email(data)
+        if not user_in_db:
+            flash('Invalid Email/Password!')
+            return redirect('/login')
+
+        if not bcrypt.check_password_hash(user_in_db.password_hash, request.form['password']):
+            flash('Invalid Email/Password!')
+            return redirect('/login')
+
+        print('Login Successful!')
+        login_id = user_in_db.id
+        session['login_id'] = login_id
+
+    
+    return redirect('/')
+
+
+@app.route('/logout')
+def f_logout():
+    session.clear()
     return redirect('/')
